@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { SymbolView } from 'expo-symbols';
-import { Platform, Pressable, ScrollView, StyleSheet, Text } from 'react-native';
+import { Platform, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ExternalLink } from '@/components/external-link';
@@ -8,12 +8,9 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Collapsible } from '@/components/ui/collapsible';
 import { WebBadge } from '@/components/web-badge';
-import { WelcomeConfetti } from '@/components/WelcomeConfetti';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useAuth } from '@/context/auth-context';
 import { useTheme } from '@/hooks/use-theme';
-import { useRef } from 'react';
-import { ConfettiMethods } from 'react-native-fast-confetti';
 
 export default function TabTwoScreen() {
   const safeAreaInsets = useSafeAreaInsets();
@@ -37,8 +34,6 @@ export default function TabTwoScreen() {
   });
 
   const { isAuthenticated, toggleAuthentication } = useAuth();
-  const backgroundConfettiRef = useRef<ConfettiMethods>(null);
-  const burstConfettiRef = useRef<ConfettiMethods>(null);
 
   return (
     <ScrollView
@@ -46,30 +41,16 @@ export default function TabTwoScreen() {
       contentInset={insets}
       contentContainerStyle={[styles.contentContainer, contentPlatformStyle]}
     >
-      <WelcomeConfetti backgroundConfettiRef={backgroundConfettiRef} burstConfettiRef={burstConfettiRef} />
-
       <ThemedView style={styles.container}>
         <ThemedView style={styles.titleContainer}>
           <ThemedText type='subtitle'>Explore</ThemedText>
-          <ThemedText type='small'>Authenticated: {String(isAuthenticated)}</ThemedText>
-          <Pressable onPress={toggleAuthentication} style={styles.authButton}>
-            <ThemedText type='smallBold'>Toggle authentication</ThemedText>
-          </Pressable>
+          <ThemedView type='backgroundElement' style={styles.authContainer}>
+            <ThemedText type='small'>Authenticated: {String(isAuthenticated)}</ThemedText>
+            <Pressable onPress={toggleAuthentication} style={styles.authButton}>
+              <ThemedText type='smallBold'>Toggle authentication</ThemedText>
+            </Pressable>
+          </ThemedView>
 
-          <Pressable
-            style={{
-              backgroundColor: 'white',
-              padding: 20,
-            }}
-            onPress={() => {
-              backgroundConfettiRef.current?.restart();
-              setTimeout(() => {
-                burstConfettiRef.current?.restart();
-              }, 100);
-            }}
-          >
-            <Text style={{ color: 'black' }}>Launch</Text>
-          </Pressable>
           <ThemedText style={styles.centerText} themeColor='textSecondary'>
             This starter app includes example{'\n'}code to help you get started.
           </ThemedText>
@@ -166,6 +147,13 @@ const styles = StyleSheet.create({
   },
   pressed: {
     opacity: 0.7,
+  },
+  authContainer: {
+    gap: Spacing.two,
+    alignItems: 'center',
+    paddingHorizontal: Spacing.three,
+    paddingVertical: Spacing.three,
+    borderRadius: Spacing.four,
   },
   authButton: {
     paddingHorizontal: Spacing.three,
